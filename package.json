@@ -1,0 +1,11 @@
+{
+  "name": "faeze-little-universe",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "check": "node --check dist/app.js && node --check dist/lab.js && node --check dist/lab-state.js && node --check dist/lab-renderer.js && node --check dist/physics.js && node --check dist/stations.js",
+    "serve": "python3 -m http.server 3000 --directory dist"
+  }
+}
