@@ -1,0 +1,39 @@
+name: Publish Faeze's Universe
+on:
+  push:
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+jobs:
+  deploy:
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v6
+      - name: Check JavaScript and run game tests
+        run: |
+          node --check dist/app.js
+          node --check dist/lab.js
+          node --check dist/lab-state.js
+          node --check dist/lab-renderer.js
+          node --check dist/physics.js
+          node --check dist/stations.js
+          node --test tests/*.test.js
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload the complete static app
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
